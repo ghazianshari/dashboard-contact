@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\AkunController;
-use App\Http\Controllers\AkunEwalletController;
 use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,19 +16,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    // // !Akun
-    // Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
-    // Route::get('/akun/create', [AkunController::class, 'create'])->name('akun.create');
-    // Route::post('/akun', [AkunController::class, 'store'])->name('akun.store');
-
-    // // !Client
-    // Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
-    // Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
-
-    // // !Ewallet
-    // Route::get('/ewallet', [AkunEwalletController::class, 'index'])->name('ewallet.index');
-    // Route::get('/ewallet/create', [AkunEwalletController::class, 'create'])->name('ewallet.create');
-    // Route::post('/ewallet', [AkunEwalletController::class, 'store'])->name('ewallet.store');
+    // !Get Client List
+    Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
+    // !Store New Client
+    Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
+    // !Edit Client
+    Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
+    // !Delete Client
+    Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
 });
 
 require __DIR__ . '/settings.php';

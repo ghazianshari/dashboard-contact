@@ -1,3 +1,4 @@
+// !MAIN ENTRY POINT FOR REACT APP where Laravel hooks into react via inertiajs
 import '../css/app.css';
 
 import { createInertiaApp } from '@inertiajs/react';
