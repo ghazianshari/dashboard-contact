@@ -3,8 +3,8 @@ import { useState } from 'react'
 import type { Client } from '@/types'
 
 export function useClientForm() {
-    const createForm = useForm({ name: '' })
-    const editForm = useForm({ name: '' })
+    const createForm = useForm({ name: '', phone: '', email: '', description: '', status: 1 })
+    const editForm = useForm({ name: '', phone: '', email: '', description: '', status: 1 })
     const deleteForm = useForm({})
 
     const [editingClient, setEditingClient] = useState<Client | null>(null)

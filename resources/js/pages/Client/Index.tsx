@@ -103,11 +103,13 @@ export default function Index({ items, filters }: Props) {
                     {/* ADD CLIENT DIALOG */}
                     <AddClientDialog
                         open={addOpen}
-                        value={createForm.data.name}
-                        error={createForm.errors.name}
+                        value={createForm.data}
+                        error={createForm.errors}
                         processing={createForm.processing}
                         onClose={() => setAddOpen(false)}
-                        onChange={(value) => createForm.setData('name', value)}
+                        onChange={(field, value) =>
+                            createForm.setData(field, value)
+                        }
                         onSubmit={() => submitCreate(() => setAddOpen(false))}
                     />
 

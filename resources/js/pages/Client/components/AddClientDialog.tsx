@@ -7,14 +7,28 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 interface Props {
     open: boolean;
-    value: string;
-    error?: string;
+    value: {
+        name: string;
+        phone: string;
+        email: string;
+        description?: string;
+        status: number;
+    };
+    error?: {
+        name?: string;
+        phone?: string;
+        email?: string;
+        description?: string;
+        status?: string;
+    };
     processing?: boolean;
     onClose: () => void;
-    onChange: (value: string) => void;
+    onChange: (field: keyof Props['value'], value: string | number) => void;
     onSubmit: () => void;
 }
 
@@ -31,7 +45,7 @@ export default function AddClientDialog({
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Add Client</DialogTitle>
+                    <DialogTitle className="mb-2">Add Client</DialogTitle>
                 </DialogHeader>
                 <form
                     onSubmit={(e) => {
@@ -40,14 +54,55 @@ export default function AddClientDialog({
                     }}
                 >
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="name">Client Name</label>
+                        {/* NAME */}
+                        <Label htmlFor="name">Name</Label>
                         <Input
                             id="name"
-                            value={value}
-                            onChange={(e) => onChange(e.target.value)}
+                            value={value.name}
+                            onChange={(e) => onChange('name', e.target.value)}
                             required
                         />
-                        {error && <p className="text-red-500">{error}</p>}
+                        {error?.name && (
+                            <p className="text-red-500">{error.name}</p>
+                        )}
+
+                        {/* PHONE */}
+                        <Label htmlFor="phone">Phone</Label>
+                        <Input
+                            id="phone"
+                            value={value.phone}
+                            onChange={(e) => onChange('phone', e.target.value)}
+                            required
+                        />
+                        {error?.phone && (
+                            <p className="text-red-500">{error.phone}</p>
+                        )}
+
+                        {/* EMAIL */}
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                            id="email"
+                            value={value.email}
+                            onChange={(e) => onChange('email', e.target.value)}
+                            required
+                        />
+                        {error?.email && (
+                            <p className="text-red-500">{error.email}</p>
+                        )}
+
+                        {/* DESCRIPTION */}
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                            id="description"
+                            value={value.description}
+                            onChange={(e) =>
+                                onChange('description', e.target.value)
+                            }
+                            required
+                        />
+                        {error?.description && (
+                            <p className="text-red-500">{error.description}</p>
+                        )}
                     </div>
                     <DialogFooter className="mt-4">
                         <Button type="submit" disabled={processing}>

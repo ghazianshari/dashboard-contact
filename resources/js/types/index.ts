@@ -1,6 +1,10 @@
 export interface Client {
     id: number;
     name: string;
+    phone: string;
+    email: string;
+    description?: string;
+    status: number;
     created_at: string;
     updated_at: string;
 }

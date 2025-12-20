@@ -3,24 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
-    use SoftDeletes;
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE   = 1;
+    const STATUS_DELETED  = 99;
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'phone',
+        'email',
+        'description',
+        'status',
+    ];
 
-    // !relasi one-to-many dengan model Akun
-    public function akuns(): HasMany
+    // !default value waktu buat client baru
+    protected $attributes = [
+        'status' => self::STATUS_ACTIVE,
+    ];
+
+    // !scope query active clients
+    public function scopeActive($query)
     {
-        return $this->hasMany(Akun::class);
-    }
-
-    // !relasi one-to-many dengan model AkunEwallet
-    public function ewallets(): HasMany
-    {
-        return $this->hasMany(AkunEwallet::class);
+        return $query->where('status', self::STATUS_ACTIVE);
     }
 }

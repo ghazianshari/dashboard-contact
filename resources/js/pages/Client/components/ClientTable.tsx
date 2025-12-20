@@ -33,6 +33,9 @@ export default function ClientTable({ items, onEdit, onDelete }: Props) {
                 <TableRow>
                     <TableHead className="w-[100px]">ID</TableHead>
                     <TableHead>Name</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead>Created At</TableHead>
                 </TableRow>
             </TableHeader>
@@ -43,6 +46,9 @@ export default function ClientTable({ items, onEdit, onDelete }: Props) {
                             {client.id}
                         </TableCell>
                         <TableCell>{client.name}</TableCell>
+                        <TableCell>{client.phone}</TableCell>
+                        <TableCell>{client.email}</TableCell>
+                        <TableCell>{client.status}</TableCell>
                         <TableCell>
                             {formatDateTime(client.created_at)}
                         </TableCell>
