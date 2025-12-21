@@ -18,3 +18,5 @@ export interface PaginatedData<T> {
     from: number;
     to: number;
 }
+
+export type badgeVariant = 'default' | 'secondary' | 'destructive' | 'outline' | 'Active' | 'Inactive' | 'Deleted';

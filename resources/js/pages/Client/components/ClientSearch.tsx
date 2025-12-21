@@ -14,6 +14,8 @@ export default function ClientSearch({ initialSearch = '' }: Props) {
         <form
             onSubmit={(e) => {
                 e.preventDefault();
+                // !prevent request if search is empty
+                if (!data.search) return;
                 get('/clients', {
                     preserveState: true,
                     replace: true,

@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ClientController extends Controller
 {
+    // !unique active rule helper
+    private function uniqueActive(string $column, ?int $ignoreId = null)
+    {
+        $rule = Rule::unique('clients', $column)->where(fn($q) => $q->where('status', Client::STATUS_ACTIVE));
+        return $ignoreId ? $rule->ignore($ignoreId) : $rule;
+    }
+
     public function index(Request $request)
     {
         $search = $request->query('search');
@@ -35,9 +43,9 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'phone'       => ['required', 'string', 'max:50'],
-            'email'       => ['required', 'email', 'max:100'],
+            'name'        => ['required', 'string', 'max:255', $this->uniqueActive('name')],
+            'phone'       => ['required', 'string', 'max:50', $this->uniqueActive('phone')],
+            'email'       => ['required', 'email', 'max:100', $this->uniqueActive('email')],
             'description' => ['nullable', 'string'],
         ]);
 
@@ -51,9 +59,9 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         $data = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'phone'       => ['required', 'string', 'max:50', Rule::unique('clients', 'phone')->ignore($client->id)],
-            'email'       => ['required', 'email', 'max:100', Rule::unique('clients', 'email')->ignore($client->id)],
+            'name'        => ['required', 'string', 'max:255', $this->uniqueActive('name', $client->id)],
+            'phone'       => ['required', 'string', 'max:50', $this->uniqueActive('phone', $client->id)],
+            'email'       => ['required', 'email', 'max:100', $this->uniqueActive('email', $client->id)],
             'description' => ['nullable', 'string'],
             'status'      => ['required', 'integer'],
         ]);
@@ -68,6 +76,7 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         $client->update([
+            'name' => 'removed-' . $client->id . '-' . $client->name,
             'status' => Client::STATUS_DELETED,
         ]);
 

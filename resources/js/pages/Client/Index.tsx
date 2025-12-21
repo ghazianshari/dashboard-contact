@@ -41,6 +41,7 @@ export default function Index({ items, filters }: Props) {
         deletingClient,
         setEditingClient,
         setDeletingClient,
+        fillEditForm,
         submitCreate,
         submitEdit,
         submitDelete,
@@ -66,7 +67,7 @@ export default function Index({ items, filters }: Props) {
                         items={items}
                         onEdit={(client) => {
                             setEditingClient(client);
-                            editForm.setData('name', client.name);
+                            fillEditForm(client);
                             setEditOpen(true);
                         }}
                         onDelete={(client) => {
@@ -116,11 +117,13 @@ export default function Index({ items, filters }: Props) {
                     {/* EDIT DIALOG */}
                     <EditClientDialog
                         open={editOpen}
-                        value={editForm.data.name}
-                        error={editForm.errors.name}
+                        value={editForm.data}
+                        error={editForm.errors}
                         processing={editForm.processing}
                         onClose={() => setEditOpen(false)}
-                        onChange={(value) => editForm.setData('name', value)}
+                        onChange={(field, value) =>
+                            editForm.setData(field, value)
+                        }
                         onSubmit={() =>
                             submitEdit(() => {
                                 setEditOpen(false);

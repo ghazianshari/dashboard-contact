@@ -44,8 +44,8 @@ export default function AddClientDialog({
     return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent>
-                <DialogHeader>
-                    <DialogTitle className="mb-2">Add Client</DialogTitle>
+                <DialogHeader className='mb-3'>
+                    <DialogTitle>Add Client</DialogTitle>
                 </DialogHeader>
                 <form
                     onSubmit={(e) => {
@@ -53,7 +53,7 @@ export default function AddClientDialog({
                         onSubmit();
                     }}
                 >
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2.5">
                         {/* NAME */}
                         <Label htmlFor="name">Name</Label>
                         <Input

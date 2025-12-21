@@ -10,6 +10,16 @@ export function useClientForm() {
     const [editingClient, setEditingClient] = useState<Client | null>(null)
     const [deletingClient, setDeletingClient] = useState<Client | null>(null)
 
+    const fillEditForm = (client: Client) => {
+        editForm.setData({
+            name: client.name,
+            phone: client.phone,
+            email: client.email,
+            description: client.description || '',
+            status: client.status,
+        })
+    }
+
     const submitCreate = (onSuccess?: () => void) => {
         createForm.post('/clients', {
             onSuccess: () => {
@@ -22,15 +32,12 @@ export function useClientForm() {
     const submitEdit = (onSuccess?: () => void) => {
         if (!editingClient) return;
         editForm.put(`/clients/${editingClient.id}`, {
-            onSuccess: () => {
-                setEditingClient(null);
-                onSuccess?.();
-            },
+            onSuccess,
         })
     }
 
     const submitDelete = (onSuccess?: () => void) => {
-        if (!deletingClient) return
+        if (!deletingClient) return;
         deleteForm.delete(`/clients/${deletingClient.id}`, {
             onSuccess,
         })
@@ -47,6 +54,7 @@ export function useClientForm() {
         deletingClient,
         setDeletingClient,
 
+        fillEditForm,
         submitCreate,
         submitEdit,
         submitDelete,

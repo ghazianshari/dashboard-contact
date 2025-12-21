@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
@@ -17,6 +18,22 @@ class Client extends Model
         'description',
         'status',
     ];
+
+    // !mutator email
+    protected function email(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => strtolower(trim($value))
+        );
+    }
+
+    // !mutator phone
+    protected function phone(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => preg_replace('/\D/', '', $value)
+        );
+    }
 
     // !default value waktu buat client baru
     protected $attributes = [
