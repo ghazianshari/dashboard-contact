@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -16,7 +17,9 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { formatDateTime } from '@/function/formatDateTime';
-import type { Client, PaginatedData } from '@/types';
+import { statusConverter } from '@/function/statusConverter';
+import { cn } from '@/lib/utils';
+import type { badgeVariant, Client, PaginatedData } from '@/types';
 import { MoreVertical } from 'lucide-react';
 
 interface Props {
@@ -26,14 +29,24 @@ interface Props {
 }
 
 export default function ClientTable({ items, onEdit, onDelete }: Props) {
+    const header = ['ID', 'Name', 'Phone', 'Email', 'Status', 'Created At'];
+
     return (
         <Table>
             <TableCaption>A list of your Clients.</TableCaption>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="w-[100px]">ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Created At</TableHead>
+                    {header.map((head, index) => (
+                        <TableHead
+                            key={head}
+                            className={cn(head === 'ID' && 'w-[100px]')}
+                            colSpan={
+                                index === header.length - 1 ? header.length : 1
+                            }
+                        >
+                            {head}
+                        </TableHead>
+                    ))}
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -43,6 +56,19 @@ export default function ClientTable({ items, onEdit, onDelete }: Props) {
                             {client.id}
                         </TableCell>
                         <TableCell>{client.name}</TableCell>
+                        <TableCell>{client.phone}</TableCell>
+                        <TableCell>{client.email}</TableCell>
+                        <TableCell>
+                            <Badge
+                                variant={
+                                    statusConverter(
+                                        client.status,
+                                    ) as badgeVariant
+                                }
+                            >
+                                {statusConverter(client.status)}
+                            </Badge>
+                        </TableCell>
                         <TableCell>
                             {formatDateTime(client.created_at)}
                         </TableCell>
@@ -76,7 +102,9 @@ export default function ClientTable({ items, onEdit, onDelete }: Props) {
             <TableFooter>
                 <TableRow>
                     <TableCell>Total</TableCell>
-                    <TableCell colSpan={3}>{items.total} Clients</TableCell>
+                    <TableCell colSpan={header.length}>
+                        {items.total} Clients
+                    </TableCell>
                 </TableRow>
             </TableFooter>
         </Table>

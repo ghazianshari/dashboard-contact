@@ -15,6 +15,7 @@ export default function AppLayout({
     breadcrumbs,
     ...props
 }: AppLayoutProps) {
+    // !Get flash messages from the page props
     const { flash } = usePage().props as {
         flash?: {
             success?: string;
@@ -24,6 +25,7 @@ export default function AppLayout({
         };
     };
 
+    // !Show toast notifications for flash messages
     useEffect(() => {
         if (flash?.success) toast.success(flash.success);
         if (flash?.error) toast.error(flash.error);

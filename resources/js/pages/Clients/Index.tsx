@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { useClientForm } from '@/hooks/client/useClientForm';
 import AppLayout from '@/layouts/app-layout';
+import { useClientForm } from '@/pages/Clients/hooks/useClientForm';
 import type { Client, PaginatedData } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
@@ -41,6 +41,8 @@ export default function Index({ items, filters }: Props) {
         deletingClient,
         setEditingClient,
         setDeletingClient,
+        createErrors,
+        fillEditForm,
         submitCreate,
         submitEdit,
         submitDelete,
@@ -66,7 +68,7 @@ export default function Index({ items, filters }: Props) {
                         items={items}
                         onEdit={(client) => {
                             setEditingClient(client);
-                            editForm.setData('name', client.name);
+                            fillEditForm(client);
                             setEditOpen(true);
                         }}
                         onDelete={(client) => {
@@ -103,22 +105,26 @@ export default function Index({ items, filters }: Props) {
                     {/* ADD CLIENT DIALOG */}
                     <AddClientDialog
                         open={addOpen}
-                        value={createForm.data.name}
-                        error={createForm.errors.name}
+                        value={createForm.data}
+                        error={{ ...createErrors, ...createForm.errors }}
                         processing={createForm.processing}
                         onClose={() => setAddOpen(false)}
-                        onChange={(value) => createForm.setData('name', value)}
+                        onChange={(field, value) =>
+                            createForm.setData(field, value)
+                        }
                         onSubmit={() => submitCreate(() => setAddOpen(false))}
                     />
 
                     {/* EDIT DIALOG */}
                     <EditClientDialog
                         open={editOpen}
-                        value={editForm.data.name}
-                        error={editForm.errors.name}
+                        value={editForm.data}
+                        error={editForm.errors}
                         processing={editForm.processing}
                         onClose={() => setEditOpen(false)}
-                        onChange={(value) => editForm.setData('name', value)}
+                        onChange={(field, value) =>
+                            editForm.setData(field, value)
+                        }
                         onSubmit={() =>
                             submitEdit(() => {
                                 setEditOpen(false);
