@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -42,6 +41,12 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
+        // ?normalize
+        $request->merge([
+            'phone' => Client::normalizePhone($request->phone),
+            'email' => strtolower(trim($request->email)),
+        ]);
+
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255', $this->uniqueActive('name')],
             'phone'       => ['required', 'string', 'max:50', $this->uniqueActive('phone')],
@@ -58,6 +63,12 @@ class ClientController extends Controller
 
     public function update(Request $request, Client $client)
     {
+        // ?normalize
+        $request->merge([
+            'phone' => Client::normalizePhone($request->phone),
+            'email' => strtolower(trim($request->email)),
+        ]);
+
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255', $this->uniqueActive('name', $client->id)],
             'phone'       => ['required', 'string', 'max:50', $this->uniqueActive('phone', $client->id)],

@@ -1,6 +1,8 @@
 import { useForm } from '@inertiajs/react'
 import { useState } from 'react'
 import type { Client } from '@/types'
+import { clientCreateSchema } from '../validation.schema'
+import * as yup from 'yup'
 
 export function useClientForm() {
     const createForm = useForm({ name: '', phone: '', email: '', description: '', status: 1 })
@@ -9,6 +11,8 @@ export function useClientForm() {
 
     const [editingClient, setEditingClient] = useState<Client | null>(null)
     const [deletingClient, setDeletingClient] = useState<Client | null>(null)
+
+    const [createErrors, setCreateErrors] = useState<Record<string, string>>({})
 
     const fillEditForm = (client: Client) => {
         editForm.setData({
@@ -20,13 +24,28 @@ export function useClientForm() {
         })
     }
 
-    const submitCreate = (onSuccess?: () => void) => {
-        createForm.post('/clients', {
-            onSuccess: () => {
-                createForm.reset()
-                onSuccess?.()
-            },
-        })
+    const submitCreate = async (onSuccess?: () => void) => {
+        try {
+            await clientCreateSchema.validate(createForm.data, { abortEarly: false });
+            setCreateErrors({});
+            createForm.post('/clients', {
+                onSuccess: () => {
+                    createForm.reset()
+                    onSuccess?.()
+                },
+            })
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                const errors: Record<string, string> = {};
+                err.inner.forEach((error) => {
+                    if (error.path) {
+                        errors[error.path] = error.message;
+                    }
+                });
+                setCreateErrors(errors);
+            }
+        }
+
     }
 
     const submitEdit = (onSuccess?: () => void) => {
@@ -53,6 +72,9 @@ export function useClientForm() {
 
         deletingClient,
         setDeletingClient,
+
+        createErrors,
+        setCreateErrors,
 
         fillEditForm,
         submitCreate,

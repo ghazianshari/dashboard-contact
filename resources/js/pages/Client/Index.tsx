@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { useClientForm } from '@/hooks/client/useClientForm';
 import AppLayout from '@/layouts/app-layout';
+import { useClientForm } from '@/pages/Client/hooks/useClientForm';
 import type { Client, PaginatedData } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
@@ -41,6 +41,7 @@ export default function Index({ items, filters }: Props) {
         deletingClient,
         setEditingClient,
         setDeletingClient,
+        createErrors,
         fillEditForm,
         submitCreate,
         submitEdit,
@@ -105,7 +106,7 @@ export default function Index({ items, filters }: Props) {
                     <AddClientDialog
                         open={addOpen}
                         value={createForm.data}
-                        error={createForm.errors}
+                        error={{ ...createErrors, ...createForm.errors }}
                         processing={createForm.processing}
                         onClose={() => setAddOpen(false)}
                         onChange={(field, value) =>

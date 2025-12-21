@@ -19,7 +19,23 @@ class Client extends Model
         'status',
     ];
 
-    // !mutator email
+    // !helper normalize phone
+    public static function normalizePhone(string $value): string
+    {
+        // ?make the [first '0' or '+62'] to become 62 for indonesia country code
+        return preg_replace(
+            '/^0/',
+            '62',
+            preg_replace(
+                '/^\+62/',
+                '62',
+                preg_replace('/\D/', '', $value)
+            )
+        );
+    }
+
+
+    // !mutator email (EXTRA PROTECTION SAFETY CAN BE FUN)
     protected function email(): Attribute
     {
         return Attribute::make(
@@ -27,11 +43,11 @@ class Client extends Model
         );
     }
 
-    // !mutator phone
+    // !mutator phone (EXTRA PROTECTION SAFETY CAN BE FUN)
     protected function phone(): Attribute
     {
         return Attribute::make(
-            set: fn($value) => preg_replace('/\D/', '', $value)
+            set: fn($value) => self::normalizePhone($value)
         );
     }
 
