@@ -30,7 +30,7 @@ class ClientController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Client/Index', [
+        return Inertia::render('Clients/Index', [
             'items' => $clients,
             'filters' => [
                 'search' => $search,

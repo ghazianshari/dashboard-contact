@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { useClientForm } from '@/pages/Client/hooks/useClientForm';
+import { useClientForm } from '@/pages/Clients/hooks/useClientForm';
 import type { Client, PaginatedData } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
