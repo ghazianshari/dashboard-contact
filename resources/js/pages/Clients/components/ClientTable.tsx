@@ -20,33 +20,74 @@ import { formatDateTime } from '@/function/formatDateTime';
 import { statusConverter } from '@/function/statusConverter';
 import { cn } from '@/lib/utils';
 import type { badgeVariant, Client, PaginatedData } from '@/types';
-import { MoreVertical } from 'lucide-react';
+import { ArrowDown, ArrowUp, MoreVertical } from 'lucide-react';
 
 interface Props {
     items: PaginatedData<Client>;
+    sort?: string;
+    direction?: 'asc' | 'desc';
+    onSort: (column: string) => void;
     onEdit: (client: Client) => void;
     onDelete: (client: Client) => void;
 }
 
-export default function ClientTable({ items, onEdit, onDelete }: Props) {
-    const header = ['ID', 'Name', 'Phone', 'Email', 'Status', 'Created At'];
+export default function ClientTable({
+    items,
+    sort,
+    direction,
+    onSort,
+    onEdit,
+    onDelete,
+}: Props) {
+    const header = [
+        { label: 'ID', key: 'id' },
+        { label: 'Name', key: 'name' },
+        { label: 'Phone', key: 'phone' },
+        { label: 'Email', key: 'email' },
+        { label: 'Status', key: 'status' },
+        { label: 'Created At', key: 'created_at' },
+    ];
 
     return (
         <Table>
             <TableCaption>A list of your Clients.</TableCaption>
             <TableHeader>
-                <TableRow>
-                    {header.map((head, index) => (
-                        <TableHead
-                            key={head}
-                            className={cn(head === 'ID' && 'w-[100px]')}
-                            colSpan={
-                                index === header.length - 1 ? header.length : 1
-                            }
-                        >
-                            {head}
-                        </TableHead>
-                    ))}
+                <TableRow className="hover:bg-muted/0">
+                    {header.map((head, index) => {
+                        const isActiveSort = sort === head.key;
+                        return (
+                            <TableHead
+                                key={head.key}
+                                className={cn(
+                                    // head.label === 'ID' && 'w-[100px]',
+                                    'cursor-pointer select-none',
+                                    'hover:font-extrabold hover:underline',
+                                )}
+                                colSpan={
+                                    index === header.length - 1
+                                        ? header.length
+                                        : 0
+                                }
+                                onClick={() => onSort(head.key)}
+                            >
+                                <div className="flex items-center gap-1">
+                                    {head.label}
+                                    {isActiveSort && (
+                                        <span className="text-xs font-extrabold text-blue-500">
+                                            {direction === 'asc' ? (
+                                                <ArrowUp size={16} />
+                                            ) : (
+                                                <ArrowDown
+                                                    className="text-red-500"
+                                                    size={16}
+                                                />
+                                            )}
+                                        </span>
+                                    )}
+                                </div>
+                            </TableHead>
+                        );
+                    })}
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -100,7 +141,7 @@ export default function ClientTable({ items, onEdit, onDelete }: Props) {
                 ))}
             </TableBody>
             <TableFooter>
-                <TableRow>
+                <TableRow className="hover:bg-muted/0">
                     <TableCell>Total</TableCell>
                     <TableCell colSpan={header.length}>
                         {items.total} Clients

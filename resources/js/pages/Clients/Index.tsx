@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { useClientForm } from '@/pages/Clients/hooks/useClientForm';
 import type { Client, PaginatedData } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import AddClientDialog from './components/AddClientDialog';
 import ClientSearch from './components/ClientSearch';
@@ -26,6 +26,8 @@ interface Props {
     items: PaginatedData<Client>;
     filters: {
         search?: string;
+        sort?: string;
+        direction?: 'asc' | 'desc';
     };
 }
 
@@ -48,6 +50,22 @@ export default function Index({ items, filters }: Props) {
         submitDelete,
     } = useClientForm();
 
+    const handleSort = (column: string) => {
+        let nextDirection: 'asc' | 'desc' = 'asc';
+        if (filters.sort === column) {
+            nextDirection = filters.direction === 'asc' ? 'desc' : 'asc';
+        }
+        router.get(
+            '/clients',
+            {
+                search: filters.search,
+                sort: column,
+                direction: nextDirection,
+            },
+            { preserveState: true, replace: true },
+        );
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Clients" />
@@ -66,6 +84,9 @@ export default function Index({ items, filters }: Props) {
                     {/* TABLE */}
                     <ClientTable
                         items={items}
+                        sort={filters.sort}
+                        direction={filters.direction}
+                        onSort={handleSort}
                         onEdit={(client) => {
                             setEditingClient(client);
                             fillEditForm(client);
