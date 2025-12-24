@@ -19,6 +19,18 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
+        $sort = $request->query('sort');
+        $direction = $request->query('direction', 'asc');
+
+        $allowedSorts = ['id', 'name', 'phone', 'email', 'status', 'created_at'];
+
+        if (!in_array($sort, $allowedSorts)) {
+            $sort = 'created_at';
+        }
+
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'asc';
+        }
 
         $clients = Client::active()
             ->when($search, function ($q) use ($search) {
@@ -26,7 +38,8 @@ class ClientController extends Controller
                     ->orWhere('phone', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             })
-            ->latest()
+            // ->latest()
+            ->orderBy($sort, $direction)
             ->paginate(10)
             ->withQueryString();
 
@@ -34,6 +47,8 @@ class ClientController extends Controller
             'items' => $clients,
             'filters' => [
                 'search' => $search,
+                'sort' => $sort,
+                'direction' => $direction,
             ],
         ]);
     }
